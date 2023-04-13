@@ -26,7 +26,10 @@ import urlJoin from 'url-join';
 import { tooljetDbOperations } from '@/Editor/QueryManager/QueryEditors/TooljetDatabase/operations';
 import { authenticationService } from '@/_services/authentication.service';
 import { setCookie } from '@/_helpers/cookie';
+import { DataSourceTypes } from '@/Editor/DataSourceManager/SourceComponents';
 import { flushSync } from 'react-dom'; // TODO: It can be removed once we've a proper state update flow
+
+import { useDataQueriesStore } from '@/_stores/dataQueriesStore';
 
 const ERROR_TYPES = Object.freeze({
   ReferenceError: 'ReferenceError',
@@ -885,7 +888,7 @@ export function previewQuery(_ref, query, editorState, calledFromQuery = false) 
 }
 
 export function runQuery(_ref, queryId, queryName, confirmed = undefined, mode = 'edit') {
-  const query = _ref.state.app.data_queries.find((query) => query.id === queryId);
+  const query = useDataQueriesStore.getState().dataQueries.find((query) => query.name === queryName);
   let dataQuery = {};
 
   if (query) {
@@ -898,22 +901,24 @@ export function runQuery(_ref, queryId, queryName, confirmed = undefined, mode =
   const options = getQueryVariables(dataQuery.options, _ref.state.currentState);
 
   if (dataQuery.options.requestConfirmation) {
-    // eslint-disable-next-line no-unsafe-optional-chaining
-    const queryConfirmationList = _ref.state?.queryConfirmationList ? [..._ref.state?.queryConfirmationList] : [];
-    const queryConfirmation = {
-      queryId,
-      queryName,
-    };
-    if (!queryConfirmationList.some((query) => queryId === query.queryId)) {
-      queryConfirmationList.push(queryConfirmation);
-    }
+    flushSync(() => {
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      const queryConfirmationList = _ref.state?.queryConfirmationList ? [..._ref.state?.queryConfirmationList] : [];
+      const queryConfirmation = {
+        queryId,
+        queryName,
+      };
+      if (!queryConfirmationList.some((query) => queryId === query.queryId)) {
+        queryConfirmationList.push(queryConfirmation);
+      }
 
-    if (confirmed === undefined) {
-      _ref.setState({
-        queryConfirmationList,
-      });
-      return;
-    }
+      if (confirmed === undefined) {
+        _ref.setState({
+          queryConfirmationList,
+        });
+        return;
+      }
+    });
   }
   const newState = {
     ..._ref.state.currentState,
@@ -1606,3 +1611,44 @@ function convertMapSet(obj) {
     return obj;
   }
 }
+
+export const checkExistingQueryName = (newName) =>
+  useDataQueriesStore.getState().dataQueries.some((query) => query.name === newName);
+
+export const runQueries = (queries, _ref) => {
+  queries.forEach((query) => {
+    if (query.options.runOnPageLoad) {
+      runQuery(_ref, query.id, query.name);
+    }
+  });
+};
+
+export const computeQueryState = (queries, _ref) => {
+  let queryState = {};
+  queries.forEach((query) => {
+    if (query.plugin?.plugin_id) {
+      queryState[query.name] = {
+        ...query.plugin.manifest_file.data.source.exposedVariables,
+        kind: query.plugin.manifest_file.data.source.kind,
+        ..._ref.state.currentState.queries[query.name],
+      };
+    } else {
+      queryState[query.name] = {
+        ...DataSourceTypes.find((source) => source.kind === query.kind).exposedVariables,
+        kind: DataSourceTypes.find((source) => source.kind === query.kind).kind,
+        ..._ref.state.currentState.queries[query.name],
+      };
+    }
+  });
+  const hasDiffQueryState = _.isEqual(_ref.state?.currentState?.queries, queryState);
+  if (hasDiffQueryState) {
+    _ref.setState({
+      currentState: {
+        ..._ref.state.currentState,
+        queries: {
+          ...queryState,
+        },
+      },
+    });
+  }
+};
