@@ -29,4 +29,6 @@ export const useDataSourcesStore = create(
 );
 
 export const useDataSources = () => useDataSourcesStore((state) => state.dataSources);
+export const useGlobalDataSources = () => useDataSourcesStore((state) => state.globalDataSources);
+export const useDataSourcesLoading = () => useDataSourcesStore((state) => state.loadingDataSources);
 export const useDataSourcesActions = () => useDataSourcesStore((state) => state.actions);

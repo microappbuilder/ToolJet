@@ -3,11 +3,12 @@ import { useEventListener } from '@/_hooks/use-event-listener';
 import { Tooltip } from 'react-tooltip';
 import { QueryDataPane } from './QueryDataPane';
 import { Confirm } from '../Viewer/Confirm';
+import { QueryManagerFn } from '../QueryManager';
 
 import { useQueryPanelActions, useUnsavedChanges, useSelectedQuery } from '@/_stores/queryPanelStore';
 import { useDataQueries } from '@/_stores/dataQueriesStore';
 
-export const QueryPanel = ({ dataQueriesChanged, children }) => {
+export const QueryPanel = ({ dataQueriesChanged, darkMode, children }) => {
   const { setSelectedQuery, updateQueryPanelHeight, setUnSavedChanges } = useQueryPanelActions();
   const isUnsavedQueriesAvailable = useUnsavedChanges();
   const selectedQuery = useSelectedQuery();
@@ -212,7 +213,49 @@ export const QueryPanel = ({ dataQueriesChanged, children }) => {
             setDraftQuery={setDraftQuery}
             setSelectedDataSource={setSelectedDataSource}
           />
-          {children({
+
+          <div className="query-definition-pane-wrapper">
+            <div className="query-definition-pane">
+              <QueryManagerFn
+                darkMode={darkMode}
+                selectedDataSource={selectedDataSource}
+                mode={editingQuery ? 'edit' : 'create'}
+                addingQuery={!editingQuery || dataQueries?.length === 0}
+                editingQuery={editingQuery}
+                toggleQueryEditor={toggleQueryEditor}
+                isSourceSelected={selectedDataSource !== null}
+              />
+              {/* <QueryManager
+                  addNewQueryAndDeselectSelectedQuery={handleAddNewQuery}
+                  toggleQueryEditor={toggleQueryEditor}
+                  dataQueries={dataQueries}
+                  mode={editingQuery ? 'edit' : 'create'}
+                  selectedQuery={selectedQuery}
+                  selectedDataSource={selectedDataSource}
+                  dataQueriesChanged={updateDataQueries}
+                  appId={appId}
+                  editingVersionId={editingVersion?.id}
+                  addingQuery={!editingQuery || dataQueries?.length === 0}
+                  editingQuery={editingQuery}
+                  currentState={currentState}
+                  darkMode={this.props.darkMode}
+                  apps={apps}
+                  allComponents={appDefinition.pages[this.state.currentPageId]?.components ?? {}}
+                  isSourceSelected={selectedDataSource !== null}
+                  isQueryPaneDragging={this.state.isQueryPaneDragging}
+                  runQuery={this.runQuery}
+                  dataSourceModalHandler={this.dataSourceModalHandler}
+                  appDefinition={appDefinition}
+                  editorState={this}
+                  showQueryConfirmation={queryConfirmationList.length > 0}
+                  createDraftQuery={createDraftQuery}
+                  clearDraftQuery={this.clearDraftQuery}
+                  isUnsavedQueriesAvailable={isUnsavedQueriesAvailable}
+                  updateDraftQueryName={updateDraftQueryName}
+                /> */}
+            </div>
+          </div>
+          {/* {children({
             toggleQueryEditor,
             selectedDataSource,
             createDraftQuery,
@@ -223,7 +266,7 @@ export const QueryPanel = ({ dataQueriesChanged, children }) => {
             editingQuery,
             updateDataQueries,
             updateDraftQueryName,
-          })}
+          })} */}
         </div>
       </div>
       <Tooltip id="tooltip-for-show-query-editor" className="tooltip" />
