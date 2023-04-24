@@ -5632,4 +5632,53 @@ ReactDOM.render(<ConnectedComponent />, document.body);`,
       },
     },
   },
+  {
+    name: 'Amis',
+    displayName: 'Amis',
+    description: 'Visual representation of a sequence of events',
+    component: 'Amis',
+    properties: {
+      data: { type: 'code', displayName: 'Data', validation: { schema: { type: 'object' } } },
+      code: { type: 'code', displayName: 'Code' },
+    },
+    defaultSize: {
+      width: 20,
+      height: 140,
+    },
+    others: {
+      showOnDesktop: { type: 'toggle', displayName: 'Show on desktop' },
+      showOnMobile: { type: 'toggle', displayName: 'Show on mobile' },
+    },
+    events: {},
+    styles: {
+      visibility: {
+        type: 'toggle',
+        displayName: 'Visibility',
+        validation: { schema: { type: 'boolean' } },
+      },
+    },
+    exposedVariables: {
+      data: { value: `{{{ title: 'Amis'}}}` },
+    },
+    definition: {
+      others: {
+        showOnDesktop: { value: '{{true}}' },
+        showOnMobile: { value: '{{false}}' },
+      },
+      properties: {
+        visible: { value: '{{true}}' },
+        data: {
+          value: `{{{ title: 'Hi! There', buttonText: 'Update Title'}}}`,
+        },
+        code: {
+          value: ``,
+          skipResolve: true,
+        },
+      },
+      events: [],
+      styles: {
+        visibility: { value: '{{true}}' },
+      },
+    },
+  },
 ];

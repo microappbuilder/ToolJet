@@ -13,6 +13,7 @@ import { DefaultComponent } from './Components/DefaultComponent';
 import { FilePicker } from './Components/FilePicker';
 import { Modal } from './Components/Modal';
 import { CustomComponent } from './Components/CustomComponent';
+import { Amis } from './Components/Amis';
 import { Icon } from './Components/Icon';
 import useFocus from '@/_hooks/use-focus';
 import Accordion from '@/_ui/Accordion';
@@ -505,6 +506,9 @@ const GetAccordion = React.memo(
 
       case 'CustomComponent':
         return <CustomComponent {...restProps} />;
+
+      case 'Amis':
+        return <Amis {...restProps} />;
 
       case 'Icon':
         return <Icon {...restProps} />;
