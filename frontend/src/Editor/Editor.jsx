@@ -1815,7 +1815,7 @@ class EditorComponent extends React.Component {
       : '';
 
     return (
-      <div className="editor wrapper">
+      <div className="editor editor-wrapper">
         <Confirm
           show={queryConfirmationList.length > 0}
           message={`Do you want to run this query - ${queryConfirmationList[0]?.queryName}?`}
