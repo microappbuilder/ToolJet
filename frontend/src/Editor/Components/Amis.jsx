@@ -6,15 +6,15 @@ const amis = window.amisRequire('amis');
 
 class RunQueryAction {
   run(action, renderer, event) {
-    console.log(action, renderer, event);
     const props = renderer.props;
+    // console.log("RUN_QUERY", props.componentId, action, renderer, event);
 
     window.postMessage(
       {
         from: 'amis',
         message: 'RUN_QUERY',
         queryName: action.query,
-        componentId: props.env.componentId,
+        componentId: props.componentId,
       },
       '*'
     );
@@ -23,15 +23,15 @@ class RunQueryAction {
 
 class UpdateDataAction {
   run(action, renderer, event) {
-    console.log(action, renderer, event);
     const props = renderer.props;
+    // console.log("UPDATE_DATA", props.componentId, action, renderer, event);
 
     window.postMessage(
       {
         from: 'amis',
         message: 'UPDATE_DATA',
         updatedObj: action.args,
-        componentId: props.env.componentId,
+        componentId: props.componentId,
       },
       '*'
     );
@@ -54,7 +54,7 @@ export const Amis = (props) => {
   const [customProps, setCustomProps] = useState(data);
   const dataQueryRef = useRef(dataQueries);
   const customPropRef = useRef(data);
-  let amisScoped = null;
+  const amisScopedRef = useRef(null);
 
   const getJSON = (config) => {
     let json = config;
@@ -70,36 +70,37 @@ export const Amis = (props) => {
   };
 
   useEffect(() => {
-    console.log('data changed', data);
+    // console.log('data changed', id, data);
     setCustomProps(data);
     customPropRef.current = data;
-    // amisScoped?.updateProps({
-    //   data
-    // });
+    amisScopedRef.current?.updateProps({
+      data,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(data)]);
 
   useEffect(() => {
-    console.log('customProps changed', customProps);
+    // console.log('customProps changed', id, customProps);
     if (!isEqual(exposedVariables.data, customProps)) {
       setExposedVariable('data', customProps);
       //   sendMessageToIframe({ message: 'DATA_UPDATED' });
     }
-    // amisScoped?.updateProps({
-    //   data: customProps
-    // });
+    amisScopedRef.current?.updateProps({
+      data: customProps,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setExposedVariable, customProps, exposedVariables.data]);
 
   useEffect(() => {
-    console.log('code changed', code);
+    // console.log('code changed', id, code);
     // sendMessageToIframe({ message: 'CODE_UPDATED' });
 
-    amisScoped = amisEmbed.embed(
+    amisScopedRef.current = amisEmbed.embed(
       `.amis-${id}`,
       getJSON(code),
       {
         data: data,
+        componentId: id,
       },
       {
         ...amisEnv,
@@ -107,7 +108,7 @@ export const Amis = (props) => {
       }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(data), code]);
+  }, [code]);
 
   useEffect(() => {
     dataQueryRef.current = dataQueries;
