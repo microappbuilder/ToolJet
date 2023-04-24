@@ -70,6 +70,11 @@ async function bootstrap() {
           'https://unpkg.com/react-dom@16.7.0/umd/react-dom.production.min.js',
           'cdn.skypack.dev',
           'cdn.jsdelivr.net',
+          'unpkg.com',
+          'unpkg.steedos.com',
+          'unpkg.steedos.cn',
+          '*.steedos.cn',
+          '*.steedos.com',
         ],
         'default-src': [
           'maps.googleapis.com',
@@ -77,6 +82,8 @@ async function bootstrap() {
           'apis.google.com',
           'accounts.google.com',
           '*.sentry.io',
+          '*.steedos.cn',
+          '*.steedos.com',
           "'self'",
           'blob:',
         ],
@@ -111,4 +118,7 @@ if (process.env.TOOLJET_HTTP_PROXY) {
   globalAgentBootstrap();
 }
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
-bootstrap();
+bootstrap().then(
+  () => {},
+  () => {}
+);
