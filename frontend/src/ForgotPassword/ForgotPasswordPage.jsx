@@ -68,7 +68,7 @@ class ForgotPasswordComponent extends React.Component {
                       Forgot Password
                     </h2>
                     <p className="common-auth-sub-header" data-cy="forgot-password-sub-header">
-                      New to ToolJet? &nbsp;
+                      {this.props.t('newToTooljet', 'New to ToolJet?')}
                       <Link
                         to={'/signup'}
                         tabIndex="-1"
