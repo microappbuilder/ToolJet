@@ -9,7 +9,15 @@ class RunQueryAction {
     console.log(action, renderer, event);
     const props = renderer.props;
 
-    props.env.runQuery(action.args);
+    window.postMessage(
+      {
+        from: 'amis',
+        message: 'RUN_QUERY',
+        queryName: action.query,
+        componentId: props.env.componentId,
+      },
+      '*'
+    );
   }
 }
 
@@ -18,13 +26,25 @@ class UpdateDataAction {
     console.log(action, renderer, event);
     const props = renderer.props;
 
-    props.env.updateData(action.args);
+    window.postMessage(
+      {
+        from: 'amis',
+        message: 'UPDATE_DATA',
+        updatedObj: action.args,
+        componentId: props.env.componentId,
+      },
+      '*'
+    );
   }
 }
 
 // 注册自定义动作
 amis.registerAction('runQuery', new RunQueryAction());
-amis.registerAction('updateDate', new UpdateDataAction());
+amis.registerAction('updateData', new UpdateDataAction());
+
+const amisEnv = {
+  theme: 'antd',
+};
 
 export const Amis = (props) => {
   const { height, properties, styles, id, setExposedVariable, exposedVariables, fireEvent, dataQueries, dataCy } =
@@ -34,6 +54,7 @@ export const Amis = (props) => {
   const [customProps, setCustomProps] = useState(data);
   const dataQueryRef = useRef(dataQueries);
   const customPropRef = useRef(data);
+  let amisScoped = null;
 
   const getJSON = (config) => {
     let json = config;
@@ -48,42 +69,42 @@ export const Amis = (props) => {
     return json;
   };
 
-  const amisEnv = {
-    runQuery: (queryName) => {
-      const filteredQuery = dataQueryRef.current.filter((query) => query.name === queryName);
-      filteredQuery.length === 1 &&
-        fireEvent('onTrigger', { queryId: filteredQuery[0].id, queryName: filteredQuery[0].name });
-    },
-
-    updateData: (updatedObj) => {
-      setCustomProps({ ...customPropRef.current, ...updatedObj });
-    },
-  };
-  let amisScoped = null;
-
   useEffect(() => {
+    console.log('data changed', data);
     setCustomProps(data);
     customPropRef.current = data;
+    // amisScoped?.updateProps({
+    //   data
+    // });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(data)]);
 
   useEffect(() => {
+    console.log('customProps changed', customProps);
     if (!isEqual(exposedVariables.data, customProps)) {
       setExposedVariable('data', customProps);
       //   sendMessageToIframe({ message: 'DATA_UPDATED' });
     }
+    // amisScoped?.updateProps({
+    //   data: customProps
+    // });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setExposedVariable, customProps, exposedVariables.data]);
 
   useEffect(() => {
+    console.log('code changed', code);
     // sendMessageToIframe({ message: 'CODE_UPDATED' });
+
     amisScoped = amisEmbed.embed(
       `.amis-${id}`,
       getJSON(code),
       {
-        data: getJSON(data),
+        data: data,
       },
-      amisEnv
+      {
+        ...amisEnv,
+        componentId: id,
+      }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(data), code]);
@@ -95,14 +116,16 @@ export const Amis = (props) => {
   useEffect(() => {
     window.addEventListener('message', (e) => {
       try {
-        if (e.data.message === 'UPDATE_DATA') {
-          setCustomProps({ ...customPropRef.current, ...e.data.updatedObj });
-        } else if (e.data.message === 'RUN_QUERY') {
-          const filteredQuery = dataQueryRef.current.filter((query) => query.name === e.data.queryName);
-          filteredQuery.length === 1 &&
-            fireEvent('onTrigger', { queryId: filteredQuery[0].id, queryName: filteredQuery[0].name });
-        } else {
-          // sendMessageToIframe(e.data);
+        if (e.data.from === 'amis' && e.data.componentId === id) {
+          if (e.data.message === 'UPDATE_DATA') {
+            setCustomProps({ ...customPropRef.current, ...e.data.updatedObj });
+          } else if (e.data.message === 'RUN_QUERY') {
+            const filteredQuery = dataQueryRef.current.filter((query) => query.name === e.data.queryName);
+            filteredQuery.length === 1 &&
+              fireEvent('onTrigger', { queryId: filteredQuery[0].id, queryName: filteredQuery[0].name });
+          } else {
+            // sendMessageToIframe(e.data);
+          }
         }
       } catch (err) {
         console.log(err);

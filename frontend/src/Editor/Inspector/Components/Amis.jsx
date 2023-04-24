@@ -38,7 +38,7 @@ export const Amis = function Amis({
         currentState={currentState}
         initialValue={code.value ?? {}}
         theme={darkMode ? 'monokai' : 'base16-light'}
-        mode="jsx"
+        mode="json"
         lineNumbers
         className="custom-component"
         onChange={(value) => paramUpdated({ name: 'code' }, 'value', value, 'properties')}

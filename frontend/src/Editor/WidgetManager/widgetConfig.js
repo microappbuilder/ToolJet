@@ -5668,36 +5668,46 @@ ReactDOM.render(<ConnectedComponent />, document.body);`,
       properties: {
         visible: { value: '{{true}}' },
         data: {
-          value: `{{{ title: 'Hi! There', buttonText: 'Update Title'}}}`,
+          value: `{{{ title: 'Hi! There', buttonText: 'Update Title', queryName: 'runjs1'}}}`,
         },
         code: {
           value: `{
-            "type": "page",
-            "title": "\${title}",
-            "body": [
-              {
-                "type": "button",
-                "label": "\${buttonText}",
-                "level": "primary",
-                "onEvent": {
-                  "click": {
-                    "actions": [
-                      {
-                        "actionType": "updateProps",
-                        "args": {
-                          "title": "Hello World!!"
-                        }
-                      },
-                      {
-                        "actionType": "runQuery",
-                        "args": "runjs1"
-                      }
-                    ]
-                  }
-                }
+  "type": "page",
+  "title": "\${title}",
+  "body": [
+    {
+      "type": "button",
+      "label": "\${buttonText}",
+      "onEvent": {
+        "click": {
+          "actions": [
+            {
+              "actionType": "updateProps",
+              "args": {
+                "title": "Hello World!!"
               }
-            ]
-          }`,
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "button",
+      "label": "Run Query",
+      "level": "primary",
+      "onEvent": {
+        "click": {
+          "actions": [
+            {
+              "actionType": "runQuery",
+              "query": "runjs1"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}`,
           skipResolve: true,
         },
       },
