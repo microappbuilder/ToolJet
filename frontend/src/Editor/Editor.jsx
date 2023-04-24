@@ -162,7 +162,7 @@ class EditorComponent extends React.Component {
   }
 
   setWindowTitle(name) {
-    document.title = name ? `${name} - Tooljet` : `Untitled App - Tooljet`;
+    document.title = name ? `${name} - Microapps` : `Untitled App - Microapps`;
   }
 
   getCurrentOrganizationDetails() {
@@ -277,7 +277,7 @@ class EditorComponent extends React.Component {
   }
 
   componentWillUnmount() {
-    document.title = 'Tooljet - Dashboard';
+    document.title = 'Microapps - Dashboard';
     this.socket && this.socket?.close();
     this.subscription && this.subscription.unsubscribe();
     if (config.ENABLE_MULTIPLAYER_EDITING) this.props?.provider?.disconnect();
