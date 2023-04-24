@@ -5671,7 +5671,33 @@ ReactDOM.render(<ConnectedComponent />, document.body);`,
           value: `{{{ title: 'Hi! There', buttonText: 'Update Title'}}}`,
         },
         code: {
-          value: ``,
+          value: `{
+            "type": "page",
+            "title": "\${title}",
+            "body": [
+              {
+                "type": "button",
+                "label": "\${buttonText}",
+                "level": "primary",
+                "onEvent": {
+                  "click": {
+                    "actions": [
+                      {
+                        "actionType": "updateProps",
+                        "args": {
+                          "title": "Hello World!!"
+                        }
+                      },
+                      {
+                        "actionType": "runQuery",
+                        "args": "runjs1"
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }`,
           skipResolve: true,
         },
       },

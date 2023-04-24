@@ -1,6 +1,31 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { isEqual } from 'lodash';
 
+const amisEmbed = window.amisRequire('amis/embed');
+const amis = window.amisRequire('amis');
+
+class RunQueryAction {
+  run(action, renderer, event) {
+    console.log(action, renderer, event);
+    const props = renderer.props;
+
+    props.env.runQuery(action.args);
+  }
+}
+
+class UpdateDataAction {
+  run(action, renderer, event) {
+    console.log(action, renderer, event);
+    const props = renderer.props;
+
+    props.env.updateData(action.args);
+  }
+}
+
+// 注册自定义动作
+amis.registerAction('runQuery', new RunQueryAction());
+amis.registerAction('updateDate', new UpdateDataAction());
+
 export const Amis = (props) => {
   const { height, properties, styles, id, setExposedVariable, exposedVariables, fireEvent, dataQueries, dataCy } =
     props;
@@ -23,8 +48,18 @@ export const Amis = (props) => {
     return json;
   };
 
+  const amisEnv = {
+    runQuery: (queryName) => {
+      const filteredQuery = dataQueryRef.current.filter((query) => query.name === queryName);
+      filteredQuery.length === 1 &&
+        fireEvent('onTrigger', { queryId: filteredQuery[0].id, queryName: filteredQuery[0].name });
+    },
+
+    updateData: (updatedObj) => {
+      setCustomProps({ ...customPropRef.current, ...updatedObj });
+    },
+  };
   let amisScoped = null;
-  const amis = window.amisRequire('amis/embed');
 
   useEffect(() => {
     setCustomProps(data);
@@ -42,7 +77,14 @@ export const Amis = (props) => {
 
   useEffect(() => {
     // sendMessageToIframe({ message: 'CODE_UPDATED' });
-    amisScoped = amis.embed(`.amis-${id}`, getJSON(code), { data: getJSON(data) });
+    amisScoped = amisEmbed.embed(
+      `.amis-${id}`,
+      getJSON(code),
+      {
+        data: getJSON(data),
+      },
+      amisEnv
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(data), code]);
 
@@ -53,16 +95,14 @@ export const Amis = (props) => {
   useEffect(() => {
     window.addEventListener('message', (e) => {
       try {
-        if (e.data.from === 'customComponent' && e.data.componentId === id) {
-          if (e.data.message === 'UPDATE_DATA') {
-            setCustomProps({ ...customPropRef.current, ...e.data.updatedObj });
-          } else if (e.data.message === 'RUN_QUERY') {
-            const filteredQuery = dataQueryRef.current.filter((query) => query.name === e.data.queryName);
-            filteredQuery.length === 1 &&
-              fireEvent('onTrigger', { queryId: filteredQuery[0].id, queryName: filteredQuery[0].name });
-          } else {
-            // sendMessageToIframe(e.data);
-          }
+        if (e.data.message === 'UPDATE_DATA') {
+          setCustomProps({ ...customPropRef.current, ...e.data.updatedObj });
+        } else if (e.data.message === 'RUN_QUERY') {
+          const filteredQuery = dataQueryRef.current.filter((query) => query.name === e.data.queryName);
+          filteredQuery.length === 1 &&
+            fireEvent('onTrigger', { queryId: filteredQuery[0].id, queryName: filteredQuery[0].name });
+        } else {
+          // sendMessageToIframe(e.data);
         }
       } catch (err) {
         console.log(err);
