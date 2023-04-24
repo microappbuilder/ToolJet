@@ -62,11 +62,11 @@ export const BlankPage = function BlankPage({
                     style={{ color: darkMode && '#ffffff' }}
                     data-cy="empty-homepage-welcome-header"
                   >
-                    {t('blankPage.welcomeToToolJet', 'Welcome to your new ToolJet workspace')}
+                    {t('homePage.blankPage.welcomeToToolJet', 'Welcome to your new ToolJet workspace')}
                   </h3>
                   <p className={`empty-title ${darkMode && 'text-white-50'}`} data-cy="empty-homepage-description">
                     {t(
-                      'blankPage.getStartedCreateNewApp',
+                      'homePage.blankPage.getStartedCreateNewApp',
                       'You can get started by creating a new application or by creating an application using a template in ToolJet Library.'
                     )}
                   </p>
