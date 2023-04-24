@@ -10,7 +10,7 @@ const environment = process.env.NODE_ENV === 'production' ? 'production' : 'deve
 
 const API_URL = {
   production: process.env.TOOLJET_SERVER_URL || (process.env.SERVE_CLIENT !== 'false' ? '__REPLACE_SUB_PATH__' : ''),
-  development: `http://localhost:${process.env.TOOLJET_SERVER_PORT || 3000}`,
+  development: process.env.TOOLJET_SERVER_URL || `http://localhost:${process.env.TOOLJET_SERVER_PORT || 3000}`,
 };
 
 const ASSET_PATH = process.env.ASSET_PATH || '';
@@ -149,6 +149,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.ASSET_PATH': JSON.stringify(ASSET_PATH),
       'process.env.SERVE_CLIENT': JSON.stringify(process.env.SERVE_CLIENT),
+      'process.env.CDN_URL': JSON.stringify(process.env.CDN_URL),
     }),
   ],
   devServer: {
@@ -157,6 +158,7 @@ module.exports = {
       directory: path.resolve(__dirname, 'assets'),
       publicPath: '/assets/',
     },
+    allowedHosts: "all"
   },
   output: {
     publicPath: ASSET_PATH,
@@ -175,5 +177,5 @@ module.exports = {
       TOOLJET_MARKETPLACE_URL:
         process.env.TOOLJET_MARKETPLACE_URL || 'https://tooljet-plugins-production.s3.us-east-2.amazonaws.com',
     }),
-  },
+  }
 };

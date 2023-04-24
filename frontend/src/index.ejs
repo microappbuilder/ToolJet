@@ -71,7 +71,14 @@
     />
     <script src="https://cdn.jsdelivr.net/pyodide/v0.22.0/full/pyodide.js"></script>
  -->
-    <script src="https://unpkg.steedos.cn/pyodide@v0.22.0/pyodide.js"></script>
+    <script src="<%= process.env.CDN_URL %>/pyodide@v0.22.0/pyodide.js"></script>
+
+    <script src="<%= process.env.CDN_URL %>/amis@2.9.0/sdk/sdk.js"></script>
+    <link rel="stylesheet" href="<%= process.env.CDN_URL %>/amis@2.9.0/lib/themes/antd.css"/>
+    <link rel="stylesheet" href="<%= process.env.CDN_URL %>/amis@2.9.0/lib/helper.css"/>
+    <link rel="stylesheet" href="<%= process.env.CDN_URL %>/amis@2.9.0/sdk/iconfont.css"/>
+    <link rel="stylesheet" href="<%= process.env.CDN_URL %>/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+
   </head>
 
   <body>
