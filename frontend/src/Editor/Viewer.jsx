@@ -526,7 +526,7 @@ class ViewerComponent extends React.Component {
           this.handleError(errorDetails, errorAppId, errorVersionId);
         }
         return (
-          <div className="viewer wrapper">
+          <div className="viewer viewer-wrapper">
             <Confirm
               show={queryConfirmationList.length > 0}
               message={'Do you want to run this query?'}

@@ -5682,7 +5682,7 @@ ReactDOM.render(<ConnectedComponent />, document.body);`,
         "click": {
           "actions": [
             {
-              "actionType": "updateProps",
+              "actionType": "updateData",
               "args": {
                 "title": "Hello World!!"
               }
