@@ -15,6 +15,8 @@ const API_URL = {
 
 const ASSET_PATH = process.env.ASSET_PATH || '';
 
+const CDN_URL = process.env.CDN_URL || "https://unpkg.steedos.cn"
+
 function stripTrailingSlash(str) {
   return str.replace(/[/]+$/, '');
 }
@@ -149,7 +151,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.ASSET_PATH': JSON.stringify(ASSET_PATH),
       'process.env.SERVE_CLIENT': JSON.stringify(process.env.SERVE_CLIENT),
-      'process.env.CDN_URL': JSON.stringify(process.env.CDN_URL),
+      'process.env.CDN_URL': JSON.stringify(CDN_URL),
     }),
   ],
   devServer: {
