@@ -87,7 +87,7 @@ function OnbboardingFromSH({ darkMode }) {
   const FormSubTitles = ['This information will help us improve ToolJet.'];
 
   return (
-    <div className="flex">
+    <div className="flex-disabled">
       <div className="onboarding-navbar onboarding-navbar-layout">
         <div className="tooljet-nav-logo">
           <Logo height="23" width="92" alt="tooljet logo" data-cy="page-logo" />

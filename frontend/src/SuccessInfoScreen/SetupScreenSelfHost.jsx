@@ -43,15 +43,15 @@ function SetupScreenSelfHost({ darkMode }) {
             <h1 data-cy="setup-card-header">
               Hello,
               <br /> Welcome to <br />
-              <span>ToolJet!</span>
+              <span>Microapps!</span>
             </h1>
-            <p data-cy="setup-card-sub-header">Let’s set up your workspace to get started with ToolJet</p>
+            <p data-cy="setup-card-sub-header">Let’s set up your workspace to get started with Microapps</p>
             <ButtonSolid
               className="sh-setup-button"
               onClick={() => setShowSelfHostOboarding(true)}
               data-cy="setup-tooljet-button"
             >
-              <span>Set up ToolJet</span>
+              <span>Set up Microapps</span>
               <EnterIcon className="enter-icon-onboard" fill={'#fff'} />
             </ButtonSolid>
           </div>
