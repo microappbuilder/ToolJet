@@ -450,7 +450,7 @@ class HomePageComponent extends React.Component {
     } = this.state;
     return (
       <Layout switchDarkMode={this.props.switchDarkMode} darkMode={this.props.darkMode}>
-        <div className="wrapper home-page">
+        <div className="home-page">
           <ConfirmDialog
             show={showAppDeletionConfirmation}
             message={this.props.t(
