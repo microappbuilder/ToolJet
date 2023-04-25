@@ -98,7 +98,7 @@ export function ManageSSO({ darkMode }) {
 
   return (
     <ErrorBoundary showFallback={true}>
-      <div className="wrapper manage-sso animation-fade">
+      <div className="manage-sso animation-fade">
         <div className="page-wrapper">
           <div className="container-xl">
             <div className="page-header d-print-none">

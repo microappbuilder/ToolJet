@@ -243,7 +243,7 @@ class ManageOrgVarsComponent extends React.Component {
   render() {
     const { isLoading, showVariableForm, addingVar, variables } = this.state;
     return (
-      <div className="wrapper org-variables-page animation-fade">
+      <div className="org-variables-page animation-fade">
         <ConfirmDialog
           show={this.state.showVariableDeleteConfirmation}
           message={this.props.t(

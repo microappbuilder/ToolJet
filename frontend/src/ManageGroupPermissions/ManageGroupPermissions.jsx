@@ -173,7 +173,7 @@ class ManageGroupPermissionsComponent extends React.Component {
     } = this.state;
     return (
       <ErrorBoundary showFallback={true}>
-        <div className="wrapper org-users-page animation-fade">
+        <div className="org-users-page animation-fade">
           <ConfirmDialog
             show={showGroupDeletionConfirmation}
             message={'This group will be permanently deleted. Do you want to continue?'}

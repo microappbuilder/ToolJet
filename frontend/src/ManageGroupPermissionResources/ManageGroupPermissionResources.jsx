@@ -320,7 +320,7 @@ class ManageGroupPermissionResourcesComponent extends React.Component {
 
     return (
       <ErrorBoundary showFallback={false}>
-        <div className="wrapper org-users-page animation-fade">
+        <div className="org-users-page animation-fade">
           {isLoadingGroup ? (
             <Loader />
           ) : (

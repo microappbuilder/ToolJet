@@ -243,7 +243,7 @@ class ManageOrgUsersComponent extends React.Component {
     } = this.state;
     return (
       <ErrorBoundary showFallback={true}>
-        <div className="wrapper org-users-page animation-fade">
+        <div className="org-users-page animation-fade">
           <div className="page-wrapper">
             <div className="container-xl">
               <div className="page-header d-print-none">

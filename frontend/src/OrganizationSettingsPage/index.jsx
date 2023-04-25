@@ -26,7 +26,7 @@ export function OrganizationSettings(props) {
   const selectedClassName = props.darkMode ? 'bg-dark-indigo' : 'bg-light-indigo';
   return (
     <Layout switchDarkMode={props.switchDarkMode} darkMode={props.darkMode}>
-      <div className="wrapper organization-settings-page">
+      <div className="organization-settings-page">
         <div className="row gx-0">
           <div className="organization-page-sidebar col border-end p-3">
             <div className="list-group">
