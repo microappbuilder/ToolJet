@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { isEqual } from 'lodash';
-
-const amisEmbed = window.amisRequire('amis/embed');
-const amis = window.amisRequire('amis');
+import { getAmisEnv, getJSON, injectAmis } from './utils';
 
 class RunQueryAction {
   run(action, renderer, event) {
@@ -38,36 +36,44 @@ class UpdateDataAction {
   }
 }
 
-// 注册自定义动作
-amis.registerAction('runQuery', new RunQueryAction());
-amis.registerAction('updateData', new UpdateDataAction());
-
-const amisEnv = {
-  theme: 'antd',
-};
+const amisEnv = getAmisEnv();
 
 export const Amis = (props) => {
-  const { height, properties, styles, id, setExposedVariable, exposedVariables, fireEvent, dataQueries, dataCy } =
-    props;
+  const {
+    currentState,
+    height,
+    properties,
+    styles,
+    id,
+    setExposedVariable,
+    exposedVariables,
+    fireEvent,
+    dataQueries,
+    dataCy,
+  } = props;
   const { visibility } = styles;
   const { code, data } = properties;
+  const { client } = currentState;
   const [customProps, setCustomProps] = useState(data);
   const dataQueryRef = useRef(dataQueries);
   const customPropRef = useRef(data);
   const amisScopedRef = useRef(null);
+  const [amisLoaded, setAmisLoaded] = useState(window.amisRequire != null);
 
-  const getJSON = (config) => {
-    let json = config;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    if (typeof config === 'string') {
-      try {
-        json = JSON.parse(config);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    return json;
-  };
+  const amisVersion = client.AMIS_VERSION || '2.9.0';
+  const cdnUrl = client.CDN_URL || 'https://unpkg.com';
+
+  if (!amisLoaded) {
+    injectAmis({
+      amisVersion,
+      cdnUrl,
+    }).then(() => {
+      setAmisLoaded(true);
+      // 注册自定义动作
+      window.amisRequire('amis').registerAction('runQuery', new RunQueryAction());
+      window.amisRequire('amis').registerAction('updateData', new UpdateDataAction());
+    });
+  }
 
   useEffect(() => {
     // console.log('data changed', id, data);
@@ -94,8 +100,9 @@ export const Amis = (props) => {
   useEffect(() => {
     // console.log('code changed', id, code);
     // sendMessageToIframe({ message: 'CODE_UPDATED' });
+    if (!amisLoaded) return;
 
-    amisScopedRef.current = amisEmbed.embed(
+    amisScopedRef.current = window.amisRequire('amis/embed').embed(
       `.amis-${id}`,
       getJSON(code),
       {
@@ -108,7 +115,7 @@ export const Amis = (props) => {
       }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [code]);
+  }, [code, amisLoaded]);
 
   useEffect(() => {
     dataQueryRef.current = dataQueries;

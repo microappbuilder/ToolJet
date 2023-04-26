@@ -41,7 +41,7 @@ import { SvgImage } from './Components/SvgImage';
 import { Html } from './Components/Html';
 import { ButtonGroup } from './Components/ButtonGroup';
 import { CustomComponent } from './Components/CustomComponent/CustomComponent';
-import { Amis } from './Components/Amis';
+import { Amis } from './Components/Amis/Amis';
 import { VerticalDivider } from './Components/verticalDivider';
 import { PDF } from './Components/PDF';
 import { ColorPicker } from './Components/ColorPicker';

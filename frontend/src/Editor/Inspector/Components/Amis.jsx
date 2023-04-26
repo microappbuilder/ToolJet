@@ -32,7 +32,7 @@ export const Amis = function Amis({
   });
 
   items.push({
-    title: 'Code',
+    title: 'Amis Schema',
     children: (
       <CodeHinter
         currentState={currentState}
