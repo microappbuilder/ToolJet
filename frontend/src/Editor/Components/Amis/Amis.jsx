@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { isEqual } from 'lodash';
-import { getAmisEnv, getJSON, injectAmis } from './utils';
+import { getJSON, injectAmis } from './utils';
 
 class RunQueryAction {
   run(action, renderer, event) {
@@ -36,8 +36,6 @@ class UpdateDataAction {
   }
 }
 
-const amisEnv = getAmisEnv();
-
 export const Amis = (props) => {
   const {
     currentState,
@@ -53,20 +51,24 @@ export const Amis = (props) => {
   } = props;
   const { visibility } = styles;
   const { code, data } = properties;
-  const { client } = currentState;
+  const { client, variables } = currentState;
   const [customProps, setCustomProps] = useState(data);
   const dataQueryRef = useRef(dataQueries);
   const customPropRef = useRef(data);
   const amisScopedRef = useRef(null);
   const [amisLoaded, setAmisLoaded] = useState(window.amisRequire != null);
+  const [assetsLoaded, setAssetsLoaded] = useState(false);
 
   const amisVersion = client.AMIS_VERSION || '2.9.0';
-  const cdnUrl = client.CDN_URL || 'https://unpkg.com';
+  const amisTheme = client.AMIS_THEME || 'antd';
+  const amisAssetUrls = client.AMIS_ASSET_URLS;
+  const cdnUrl = variables.CDN_URL || client.CDN_URL || 'https://unpkg.com';
 
   if (!amisLoaded) {
     injectAmis({
       amisVersion,
       cdnUrl,
+      amisTheme,
     }).then(() => {
       setAmisLoaded(true);
       // 注册自定义动作
@@ -110,7 +112,7 @@ export const Amis = (props) => {
         componentId: id,
       },
       {
-        ...amisEnv,
+        theme: amisTheme,
         componentId: id,
       }
     );
@@ -180,14 +182,5 @@ export const Amis = (props) => {
   //     }
   //   };
 
-  return (
-    <div className={`amis-${id}`} style={{ display: visibility ? '' : 'none', height }} data-cy={dataCy}>
-      {/* <iframe
-            srcDoc={iframeContent}
-            style={{ width: '100%', height: '100%', border: 'none' }}
-            ref={iFrameRef}
-            data-id={id}
-        ></iframe>  */}
-    </div>
-  );
+  return <div className={`amis-${id}`} style={{ display: visibility ? '' : 'none', height }} data-cy={dataCy}></div>;
 };
