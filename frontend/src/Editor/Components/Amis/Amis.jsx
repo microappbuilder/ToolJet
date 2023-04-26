@@ -1,40 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { isEqual } from 'lodash';
 import { getJSON, injectAmis, injectAssets } from './utils';
-
-class RunQueryAction {
-  run(action, renderer, event) {
-    const props = renderer.props;
-    // console.log("RUN_QUERY", props.componentId, action, renderer, event);
-
-    window.postMessage(
-      {
-        from: 'amis',
-        message: 'RUN_QUERY',
-        queryName: action.query,
-        componentId: props.componentId,
-      },
-      '*'
-    );
-  }
-}
-
-class UpdateDataAction {
-  run(action, renderer, event) {
-    const props = renderer.props;
-    // console.log("UPDATE_DATA", props.componentId, action, renderer, event);
-
-    window.postMessage(
-      {
-        from: 'amis',
-        message: 'UPDATE_DATA',
-        updatedObj: action.args,
-        componentId: props.componentId,
-      },
-      '*'
-    );
-  }
-}
+import { RunQueryAction, UpdateDataAction } from './AmisActions.js';
 
 export const Amis = (props) => {
   const {
@@ -66,7 +33,9 @@ export const Amis = (props) => {
 
   const [assetsLoaded, setAssetsLoaded] = useState(!assetUrls);
 
-  if (!amisLoaded) {
+  useEffect(() => {
+    if (amisLoaded) return;
+
     injectAmis({
       amisVersion,
       cdnUrl,
@@ -74,14 +43,15 @@ export const Amis = (props) => {
       steedosRootUrl,
     }).then(() => {
       setAmisLoaded(true);
-      // 注册自定义动作
-      window.amisRequire('amis').registerAction('runQuery', new RunQueryAction());
-      window.amisRequire('amis').registerAction('updateData', new UpdateDataAction());
     });
-  }
+  }, []);
 
   useEffect(() => {
     if (!amisLoaded || assetsLoaded) return;
+
+    // 注册自定义动作
+    window.amisRequire('amis').registerAction('runQuery', new RunQueryAction());
+    window.amisRequire('amis').registerAction('updateData', new UpdateDataAction());
 
     if (assetUrls) {
       injectAssets(assetUrls).then(() => {
@@ -117,9 +87,14 @@ export const Amis = (props) => {
     // sendMessageToIframe({ message: 'CODE_UPDATED' });
     if (!amisLoaded || !assetsLoaded) return;
 
+    const amisSchema = getJSON(code);
+
+    const context = Object.assign({}, amisSchema.data?.context, data?.context);
+    window.Builder.set(context);
+
     amisScopedRef.current = window.amisRequire('amis/embed').embed(
       `.amis-${id}`,
-      getJSON(code),
+      amisSchema,
       {
         data: data,
         componentId: id,
