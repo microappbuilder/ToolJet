@@ -44,15 +44,15 @@ export const Amis = (props) => {
       amisTheme,
     }).then(() => {
       setAmisLoaded(true);
+
+      // 注册自定义动作
+      window.amisRequire('amis').registerAction('runQuery', new RunQueryAction());
+      window.amisRequire('amis').registerAction('updateData', new UpdateDataAction());
     });
   }, []);
 
   useEffect(() => {
     if (!amisLoaded || assetsLoaded) return;
-
-    // 注册自定义动作
-    window.amisRequire('amis').registerAction('runQuery', new RunQueryAction());
-    window.amisRequire('amis').registerAction('updateData', new UpdateDataAction());
 
     if (assetUrls) {
       injectAssets(assetUrls).then(() => {
