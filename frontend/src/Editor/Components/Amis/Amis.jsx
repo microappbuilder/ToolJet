@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { isEqual } from 'lodash';
+import { resolveReferences, validateWidget } from '@/_helpers/utils';
 import { getJSON, injectAmis, injectAssets } from './utils';
 import { RunQueryAction, UpdateDataAction } from './AmisActions.js';
 
 export const Amis = (props) => {
   const {
+    component,
     currentState,
     height,
     properties,
@@ -24,12 +26,12 @@ export const Amis = (props) => {
   const customPropRef = useRef(data);
   const amisScopedRef = useRef(null);
   const [amisLoaded, setAmisLoaded] = useState(window.amisRequire != null);
+  const [amisSchema, setAmisSchema] = React.useState({});
 
   const amisVersion = client.AMIS_VERSION || '2.9.0';
   const amisTheme = client.AMIS_THEME || 'antd';
   const assetUrls = client.ASSET_URLS;
   const cdnUrl = variables.CDN_URL || client.CDN_URL || 'https://unpkg.com';
-  const steedosRootUrl = client.STEEDOS_ROOT_URL;
 
   const [assetsLoaded, setAssetsLoaded] = useState(!assetUrls);
 
@@ -40,7 +42,6 @@ export const Amis = (props) => {
       amisVersion,
       cdnUrl,
       amisTheme,
-      steedosRootUrl,
     }).then(() => {
       setAmisLoaded(true);
     });
@@ -83,13 +84,14 @@ export const Amis = (props) => {
   }, [setExposedVariable, customProps, exposedVariables.data]);
 
   useEffect(() => {
-    // console.log('code changed', id, code);
-    // sendMessageToIframe({ message: 'CODE_UPDATED' });
+    setAmisSchema(getJSON(code) || {});
+  }, [JSON.stringify(code)]);
+
+  useEffect(() => {
+    // console.log('amisSchema changed', id, amisSchema, code, props);
     if (!amisLoaded || !assetsLoaded) return;
 
-    const amisSchema = getJSON(code);
-
-    const context = Object.assign({}, amisSchema.data?.context, data?.context);
+    const context = Object.assign({}, amisSchema?.data?.context, data?.context);
     window.Builder.set(context);
 
     amisScopedRef.current = window.amisRequire('amis/embed').embed(
@@ -105,7 +107,7 @@ export const Amis = (props) => {
       }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [code, amisLoaded, assetsLoaded]);
+  }, [amisSchema, amisLoaded, assetsLoaded]);
 
   useEffect(() => {
     dataQueryRef.current = dataQueries;

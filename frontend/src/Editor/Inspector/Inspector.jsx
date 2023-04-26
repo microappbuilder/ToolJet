@@ -507,8 +507,8 @@ const GetAccordion = React.memo(
       case 'CustomComponent':
         return <CustomComponent {...restProps} />;
 
-      case 'Amis':
-        return <Amis {...restProps} />;
+      // case 'Amis':
+      //   return <Amis {...restProps} />;
 
       case 'Icon':
         return <Icon {...restProps} />;

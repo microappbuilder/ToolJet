@@ -56,12 +56,7 @@ export const injectCSS = (cssUrl, { insertAt = 'bottom' } = {}) => {
   ASSET_INJECT_URLS[cssUrl] = 'done';
 };
 
-export const injectAmis = async ({
-  cdnUrl = 'https://unpkg.com',
-  amisVersion = '2.9.0',
-  amisTheme = 'antd',
-  steedosRootUrl,
-}) => {
+export const injectAmis = async ({ cdnUrl = 'https://unpkg.com', amisVersion = '2.9.0', amisTheme = 'antd' }) => {
   await injectScript(`${cdnUrl}/@steedos-builder/sdk@0.2.37/dist/index.umd.js`, { async: false, defer: true });
   await injectScript(`${cdnUrl}/amis@${amisVersion}/sdk/sdk.js`, { async: false, defer: true });
   await injectScript(`${cdnUrl}/lodash@4.17.21/lodash.min.js`, { async: false, defer: true });

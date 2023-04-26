@@ -5638,8 +5638,8 @@ ReactDOM.render(<ConnectedComponent />, document.body);`,
     description: 'Visual representation of a sequence of events',
     component: 'Amis',
     properties: {
-      data: { type: 'code', displayName: 'Data', validation: { schema: { type: 'object' } } },
-      code: { type: 'code', displayName: 'Code' },
+      data: { type: 'code', displayName: 'Data' },
+      code: { type: 'code', displayName: 'Schema' },
     },
     defaultSize: {
       width: 20,
@@ -5671,7 +5671,7 @@ ReactDOM.render(<ConnectedComponent />, document.body);`,
           value: `{{{ title: 'Hi! There', buttonText: 'Update Title', queryName: 'runjs1'}}}`,
         },
         code: {
-          value: `{
+          value: `{{{
   "type": "page",
   "title": "\${title}",
   "body": [
@@ -5707,8 +5707,7 @@ ReactDOM.render(<ConnectedComponent />, document.body);`,
       }
     }
   ]
-}`,
-          skipResolve: true,
+}}}`,
         },
       },
       events: [],
