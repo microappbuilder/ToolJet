@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
-
 export const getAmisWrapperComponent = (amisSchemaFunction) => {
   const AmisWrapperComponent = (props = {}) => {
+    const amisReact = window.amisRequire('react');
     const { $schema, body, render } = props;
-    const [schema, setSchema] = useState(null);
-    useEffect(() => {
+    const [schema, setSchema] = amisReact.useState(null);
+    amisReact.useEffect(() => {
       const result = amisSchemaFunction(props);
       if (result.then && typeof result.then === 'function') {
         result.then((data) => {
@@ -31,10 +30,10 @@ export const getAmisWrapperComponent = (amisSchemaFunction) => {
     //   console.trace('Component: ', props, 'Generated Amis Schema: ', schema);
     //   console.groupEnd();
     // }
-    return React.createElement(
-      React.Fragment,
+    return amisReact.createElement(
+      amisReact.Fragment,
       null,
-      React.createElement(React.Fragment, null, schema && render ? render('body', schema) : '')
+      amisReact.createElement(amisReact.Fragment, null, schema && render ? render('body', schema) : '')
     );
   };
 
