@@ -31,7 +31,7 @@ export const Amis = (props) => {
   const amisVersion = client.AMIS_VERSION || '2.9.0';
   const amisTheme = client.AMIS_THEME || 'antd';
   const assetUrls = client.ASSET_URLS;
-  const cdnUrl = variables.CDN_URL || client.CDN_URL || 'https://unpkg.com';
+  const cdnUrl = client.CDN_URL || process.env.CDN_URL || 'https://unpkg.steedos.cn';
 
   const [assetsLoaded, setAssetsLoaded] = useState(!assetUrls);
 
