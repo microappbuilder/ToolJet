@@ -120,5 +120,7 @@ if (process.env.TOOLJET_HTTP_PROXY) {
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 bootstrap().then(
   () => {},
-  () => {}
+  (e) => {
+    console.error(e);
+  }
 );
