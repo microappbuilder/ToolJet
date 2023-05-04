@@ -13,6 +13,7 @@
     "@react-google-maps/api": "^2.18.1",
     "@sentry/react": "^7.37.2",
     "@sentry/tracing": "^7.37.2",
+    "@steedos-builder/fiddle": "0.0.5",
     "@tabler/icons-react": "^2.4.0",
     "@tooljet/plugins": "../plugins",
     "@uiw/react-codemirror": "^3.0.6",
@@ -102,6 +103,7 @@
     "url-join": "^5.0.0",
     "use-react-router-breadcrumbs": "^4.0.1",
     "uuid": "9.0.0",
+    "webcomponents-in-react": "^1.0.1",
     "xlsx": "^0.18.5",
     "y-websocket": "^1.4.5",
     "yjs": "^13.5.46"
