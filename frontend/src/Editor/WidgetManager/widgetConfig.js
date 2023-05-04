@@ -5668,7 +5668,7 @@ ReactDOM.render(<ConnectedComponent />, document.body);`,
       properties: {
         visible: { value: '{{true}}' },
         data: {
-          value: `{{{ title: 'Hi! There', buttonText: 'Update Title', queryName: 'runjs1'}}}`,
+          value: `{{{ "title": "Hi! There", "buttonText": "Update Title", "queryName": "runjs1"}}}`,
         },
         code: {
           value: `{{{

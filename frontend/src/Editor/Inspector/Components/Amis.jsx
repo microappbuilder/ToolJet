@@ -23,6 +23,7 @@ export const Amis = function Amis({
     children: (
       <CodeHinter
         currentState={currentState}
+        mode="json"
         initialValue={args.value ?? {}}
         theme={darkMode ? 'monokai' : 'base16-light'}
         onChange={(value) => paramUpdated({ name: 'data' }, 'value', value, 'properties')}
@@ -43,7 +44,7 @@ export const Amis = function Amis({
         className="custom-component"
         onChange={(value) => paramUpdated({ name: 'code' }, 'value', value, 'properties')}
         componentName={`widget/${component.component.name}/code`}
-        enablePreview={false}
+        enablePreview={true}
         height={400}
         hideSuggestion
       />
