@@ -31,6 +31,7 @@ export const Amis = function Amis(props) {
     pageId: component.id,
     messageOnly: true,
     hiddenDeploy: true,
+    retUrl: document.location.href,
   };
 
   const getAmisSchema = () => {
