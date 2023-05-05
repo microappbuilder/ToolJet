@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { renderElement } from '@/Editor/Inspector/Utils';
 import { CodeHinter } from '@/Editor/CodeBuilder/CodeHinter';
@@ -22,31 +22,15 @@ export const Amis = function Amis(props) {
     layoutPropertyChanged,
   } = props;
   const [showEditor, setShowEditor] = useState(false);
+  const editorRef = useRef(null);
   const code = component.component.definition.properties.code;
   const data = component.component.definition.properties.data;
   const { t } = useTranslation();
 
   const editorSettings = {
-    pageId: 'xxx',
+    pageId: component.id,
     messageOnly: true,
     hiddenDeploy: true,
-  };
-
-  window.addEventListener('message', function (event) {
-    if (event.data) {
-      // if (event.data.type === 'builder.loadContent') {
-      // }
-      if (event.data.type === 'builder.saveContent') {
-        paramUpdated({ name: 'code' }, 'value', JSON.stringify(event.data.data.data.AmisSchema), 'properties');
-        setShowEditor(false);
-      }
-      // if(event.data.type === "builder.deployContent"){
-      // }
-    }
-  });
-
-  const onAmisDesignerButtonClick = () => {
-    setShowEditor(true);
   };
 
   const getAmisSchema = () => {
@@ -79,6 +63,34 @@ export const Amis = function Amis(props) {
     return schema;
   };
 
+  const saveAmisSchema = (amisSchema) => {
+    delete amisSchema.data;
+    paramUpdated({ name: 'code' }, 'value', JSON.stringify(amisSchema, null, 2), 'properties');
+  };
+
+  useEffect(() => {
+    window.addEventListener('message', function (event) {
+      if (event.data) {
+        if (event.data.type === 'builder.loadContent') {
+          let comp = document.querySelector('builder-fiddle');
+          comp.messageFrame('builder.contentChanged', { AmisSchema: getAmisSchema() });
+        }
+        if (event.data.type === 'builder.saveContent') {
+          saveAmisSchema(event.data.data.data.AmisSchema);
+          let comp = document.querySelector('builder-fiddle');
+          comp.messageFrame('builder.contentSaved');
+          setShowEditor(false);
+        }
+        // if(event.data.type === "builder.deployContent"){
+        // }
+      }
+    });
+  }, []);
+
+  const onAmisDesignerButtonClick = () => {
+    setShowEditor(true);
+  };
+
   let items = [];
 
   items.push({
@@ -99,18 +111,19 @@ export const Amis = function Amis(props) {
     title: 'Amis Schema',
     children: (
       <>
-        <Button variant="outline-primary" onClick={onAmisDesignerButtonClick}>
+        <Button variant="outline-primary" className="mb-2" onClick={onAmisDesignerButtonClick}>
           {t('amis.designer', 'Amis Designer')}
         </Button>
         <Modal show={showEditor} fullscreen={true} onHide={() => setShowEditor(false)}>
-          <Modal.Header closeButton>
+          {/* <Modal.Header closeButton>
             <Modal.Title>{t('amis.designer', 'Amis Designer')}</Modal.Title>
-          </Modal.Header>
+          </Modal.Header> */}
           <Modal.Body>
             <BuilderFiddle
               host="https://builder.steedos.cn/amis"
               settings={editorSettings}
-              data={{ AmisSchema: getAmisSchema() }}
+              // data={{ AmisSchema: getAmisSchema() }}
+              ref={editorRef}
             ></BuilderFiddle>
           </Modal.Body>
         </Modal>
