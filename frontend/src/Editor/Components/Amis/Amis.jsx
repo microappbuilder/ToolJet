@@ -18,6 +18,7 @@ export const Amis = (props) => {
     dataQueries,
     dataCy,
   } = props;
+  console.log(props);
   const { visibility } = styles;
   const { code, data } = properties;
   const { client, variables } = currentState;
@@ -25,7 +26,7 @@ export const Amis = (props) => {
   const dataQueryRef = useRef(dataQueries);
   const customPropRef = useRef(data);
   const amisScopedRef = useRef(null);
-  const [amisLoaded, setAmisLoaded] = useState(window.amisRequire != null);
+  const [amisLoaded, setAmisLoaded] = useState(false);
   const [amisSchema, setAmisSchema] = React.useState({});
 
   const amisVersion = client.AMIS_VERSION || '2.9.0';
@@ -33,10 +34,15 @@ export const Amis = (props) => {
   const assetUrls = client.ASSET_URLS;
   const cdnUrl = client.CDN_URL || process.env.CDN_URL || 'https://unpkg.steedos.cn';
 
-  const [assetsLoaded, setAssetsLoaded] = useState(!assetUrls);
+  const [assetsLoaded, setAssetsLoaded] = useState(false);
 
   useEffect(() => {
     if (amisLoaded) return;
+
+    if (window.amisRequire != null) {
+      setAmisLoaded(true);
+      return;
+    }
 
     injectAmis({
       amisVersion,
@@ -58,6 +64,8 @@ export const Amis = (props) => {
       injectAssets(assetUrls).then(() => {
         setAssetsLoaded(true);
       });
+    } else {
+      setAssetsLoaded(true);
     }
   }, [amisLoaded]);
 

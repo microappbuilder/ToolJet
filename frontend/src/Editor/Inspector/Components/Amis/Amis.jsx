@@ -22,7 +22,6 @@ export const Amis = function Amis(props) {
     layoutPropertyChanged,
   } = props;
   const [showEditor, setShowEditor] = useState(false);
-  const editorRef = useRef(null);
   const code = component.component.definition.properties.code;
   const data = component.component.definition.properties.data;
   const { t } = useTranslation();
@@ -36,7 +35,6 @@ export const Amis = function Amis(props) {
 
   const getAmisSchema = () => {
     const schemaResolved = resolveReferences(component.component.definition.properties.code?.value, currentState);
-
     const dataResolved = resolveReferences(component.component.definition.properties.data?.value, currentState);
 
     let schema = schemaResolved;
@@ -124,7 +122,6 @@ export const Amis = function Amis(props) {
               host="https://builder.steedos.cn/amis"
               settings={editorSettings}
               // data={{ AmisSchema: getAmisSchema() }}
-              ref={editorRef}
             ></BuilderFiddle>
           </Modal.Body>
         </Modal>
